@@ -9,4 +9,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MyNoteController {
     Logger log = LoggerFactory.getLogger(MyNoteController.class);
+
 }
