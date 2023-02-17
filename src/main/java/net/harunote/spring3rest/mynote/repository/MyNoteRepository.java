@@ -1,4 +1,4 @@
-package net.harunote.spring3rest.mynote.repository;
-
-public class MyNoteRepository {
+package net.harunote.spring3rest.mynote.repository;/**
+ * @author CodeVillains
+ */public interface MyNoteRepository {
 }
