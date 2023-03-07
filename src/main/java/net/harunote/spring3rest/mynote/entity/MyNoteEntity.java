@@ -30,7 +30,7 @@ public class MyNoteEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "my_note_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private List<TagEntity> tag;
 

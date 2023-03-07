@@ -21,7 +21,6 @@ public class TagEntity {
     @Column(name = "my_tag_name")
     private String myTagName;
 
-
     @Column(name = "my_note_id")
     private Long myNoteId;
 
