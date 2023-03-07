@@ -79,10 +79,11 @@ public class MyNoteService {
     public MyNoteDTO findByTag() {
         Optional<TagEntity> tag = tagRepository.findById(1L);
         MyNoteDTO myNote = null;
-//        if (tag.isPresent()) {
-//            MyNoteEntity note = tag.get().getMyNote();
-//            myNote = new MyNoteDTO(note.getId(), note.getTitle(), note.getContent(), note.isDone(), note.getCreatedAt());
-//        }
+        log.info("# tag.isPresent() = {}", tag.isPresent());
+        if (tag.isPresent()) {
+            MyNoteEntity note = tag.get().getMyNote();
+            myNote = new MyNoteDTO(note.getId(), note.getTitle(), note.getContent(), note.isDone(), note.getCreatedAt());
+        }
         return myNote;
     }
 }
