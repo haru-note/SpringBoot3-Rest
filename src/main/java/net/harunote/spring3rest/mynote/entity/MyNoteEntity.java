@@ -3,14 +3,14 @@ package net.harunote.spring3rest.mynote.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "my_note")
-@EqualsAndHashCode
 @NoArgsConstructor
 @Setter
 @Getter
-@ToString()
+@EqualsAndHashCode
 public class MyNoteEntity {
     @Id
     @Column(name = "id")
@@ -29,5 +29,10 @@ public class MyNoteEntity {
     @Column(name = "created_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "my_note_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private List<TagEntity> tag;
+
 
 }

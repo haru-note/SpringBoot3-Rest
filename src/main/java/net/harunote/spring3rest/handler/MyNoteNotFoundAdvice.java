@@ -1,6 +1,6 @@
-package net.harunote.spring3rest.mynote.handler;
+package net.harunote.spring3rest.handler;
 
-import net.harunote.spring3rest.mynote.exception.MyNoteNotFoundException;
+import net.harunote.spring3rest.exception.MyNoteNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

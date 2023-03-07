@@ -1,4 +1,4 @@
-package net.harunote.spring3rest.mynote.exception;
+package net.harunote.spring3rest.exception;
 
 /**
  * @author CodeVillains
