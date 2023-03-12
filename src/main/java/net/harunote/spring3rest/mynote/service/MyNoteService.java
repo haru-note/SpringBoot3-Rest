@@ -8,9 +8,12 @@ import net.harunote.spring3rest.mynote.entity.MyNoteEntity;
 import net.harunote.spring3rest.mynote.entity.TagEntity;
 import net.harunote.spring3rest.mynote.repository.MyNoteRepository;
 import net.harunote.spring3rest.mynote.repository.TagRepository;
+import net.harunote.spring3rest.mynote.request.MyNoteRequest;
+import net.harunote.spring3rest.mynote.request.TagRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,9 +31,31 @@ public class MyNoteService {
         return myNoteRepository.findAll();
     }
 
-    public MyNoteEntity save(MyNoteEntity myNoteEntity) {
-        myNoteEntity.setCreatedAt(new Date());
-        return myNoteRepository.save(myNoteEntity);
+    public MyNoteRequest save(MyNoteRequest noteRequest) {
+        MyNoteEntity entity = toEntity(noteRequest);
+
+        if (!noteRequest.getTag().isEmpty()) {
+            List<TagEntity> tagEntities = new ArrayList<>();
+            for (TagRequest t : noteRequest.getTag()) {
+                TagEntity tag = new TagEntity();
+                tag.setMyTagName(t.getTagName());
+                tag.setMyNote(entity);
+                tagEntities.add(tag);
+                entity.setTag(tagEntities);
+            }
+        }
+        myNoteRepository.save(entity);
+        return noteRequest;
+    }
+
+    private MyNoteEntity toEntity(MyNoteRequest request) {
+        MyNoteEntity entity = new MyNoteEntity();
+        entity.setTitle(request.getTitle());
+        entity.setContent(request.getContent());
+        entity.setCreatedAt(new Date());
+        entity.setDone(request.isDone());
+
+        return entity;
     }
 
     public MyNoteDTO findById(Long id) {
@@ -53,20 +78,45 @@ public class MyNoteService {
         return myNoteDTO;
     }
 
-    public MyNoteEntity update(Long id, MyNoteEntity requestNote) {
-        Optional<MyNoteEntity> myNoteEntity = myNoteRepository.findById(id);
+    public void update(Long id, MyNoteRequest myNoteRequest) {
+        MyNoteEntity entity = myNoteRepository.findById(id).orElseThrow(() -> new MyNoteNotFoundException(id));
+        entity.setTitle(myNoteRequest.getTitle());
+        entity.setContent(myNoteRequest.getContent());
+        entity.setDone(myNoteRequest.isDone());
 
-        if (myNoteEntity.isPresent()) {
-            myNoteEntity.get().setTitle(requestNote.getTitle());
-            myNoteEntity.get().setContent(requestNote.getContent());
-            myNoteEntity.get().setDone(requestNote.isDone());
+        for (TagRequest tagRequest : myNoteRequest.getTag()) {
+            Optional<TagEntity> tagOptional = entity.getTag().stream()
+                    .filter(t -> t.getId().equals(tagRequest.getId()))
+                    .findFirst();
 
-            return myNoteRepository.save(myNoteEntity.get());
-        } else {
-            log.info("My Note가 존재하지 않음 id = {}", id);
-            return new MyNoteEntity();
+            if (tagOptional.isPresent()) {
+                TagEntity tag = tagOptional.get();
+                tag.setMyTagName(tagRequest.getTagName());
+                tag.setDeleted(tagRequest.isDeleted());
+            } else {
+                TagEntity tag = new TagEntity();
+                tag.setMyTagName(tagRequest.getTagName());
+                tag.setMyNote(entity);
+                entity.getTag().add(tag);
+            }
         }
+        myNoteRepository.save(entity);
     }
+
+    /**
+    private List<TagEntity> addTag(MyNoteEntity entity, List<String> tags) {
+        List<TagEntity> entities = new ArrayList<>();
+        if (!tags.isEmpty()) {
+            for (String tag : tags) {
+                TagEntity tagEntity= new TagEntity();
+                tagEntity.setMyNote(entity);
+                tagEntity.setMyTagName(tag);
+                tagEntity.setDeleted(false);
+            }
+        }
+        return null;
+    }
+     */
 
     public void delete(Long id) {
         myNoteRepository.deleteById(id);
@@ -79,7 +129,6 @@ public class MyNoteService {
     public MyNoteDTO findByTag() {
         Optional<TagEntity> tag = tagRepository.findById(1L);
         MyNoteDTO myNote = null;
-        log.info("# tag.isPresent() = {}", tag.isPresent());
         if (tag.isPresent()) {
             MyNoteEntity note = tag.get().getMyNote();
             myNote = new MyNoteDTO(note.getId(), note.getTitle(), note.getContent(), note.isDone(), note.getCreatedAt());

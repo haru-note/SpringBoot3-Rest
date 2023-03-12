@@ -32,6 +32,4 @@ public class MyNoteEntity {
 
     @OneToMany(mappedBy = "myNote", cascade = CascadeType.ALL)
     private List<TagEntity> tag;
-
-
 }

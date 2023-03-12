@@ -22,16 +22,9 @@ public class MyNoteDTO {
     }
 
     private Long myNoteId;
-
     private String title;
-
     private String content;
-
     private boolean done;
-
     private Date createdAt;
-
     private List<TagDTO> tags;
-
-
 }

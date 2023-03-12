@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.harunote.spring3rest.mynote.dto.MyNoteDTO;
 import net.harunote.spring3rest.mynote.entity.MyNoteEntity;
 import net.harunote.spring3rest.mynote.entity.TagEntity;
+import net.harunote.spring3rest.mynote.request.MyNoteRequest;
 import net.harunote.spring3rest.mynote.service.MyNoteService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,13 +32,14 @@ public class MyNoteController {
     }
 
     @PostMapping("/mynote")
-    MyNoteEntity addNote(@RequestBody MyNoteEntity myNoteEntity) {
-        return myNoteService.save(myNoteEntity);
+    MyNoteRequest addNoteAndTag(@RequestBody MyNoteRequest noteRequest) {
+        return myNoteService.save(noteRequest);
     }
 
     @PutMapping("/mynote/{id}")
-    MyNoteEntity updateNote(@PathVariable Long id, @RequestBody MyNoteEntity requestNote) {
-        return myNoteService.update(id, requestNote);
+    ResponseEntity<Void> updateNote(@PathVariable Long id, @RequestBody MyNoteRequest noteRequest) {
+        myNoteService.update(id, noteRequest);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/mynote/{id}")
@@ -58,4 +61,7 @@ public class MyNoteController {
     MyNoteDTO getTag() {
         return myNoteService.findByTag();
     }
+
+
+
 }

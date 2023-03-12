@@ -17,9 +17,7 @@ public class TagDTO {
     }
 
     private Long tagId;
-
     private String myTagName;
-
     private boolean deleted;
 
 }
