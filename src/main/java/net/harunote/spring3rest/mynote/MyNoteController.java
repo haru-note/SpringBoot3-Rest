@@ -6,9 +6,11 @@ import net.harunote.spring3rest.mynote.entity.MyNoteEntity;
 import net.harunote.spring3rest.mynote.entity.TagEntity;
 import net.harunote.spring3rest.mynote.request.MyNoteRequest;
 import net.harunote.spring3rest.mynote.service.MyNoteService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 
@@ -32,8 +34,9 @@ public class MyNoteController {
     }
 
     @PostMapping("/mynote")
-    MyNoteRequest addNoteAndTag(@RequestBody MyNoteRequest noteRequest) {
-        return myNoteService.save(noteRequest);
+    ResponseEntity<MyNoteRequest> addNoteAndTag(@RequestBody MyNoteRequest noteRequest) {
+        MyNoteRequest save = myNoteService.save(noteRequest);
+        return new ResponseEntity<>(save, HttpStatus.CREATED);
     }
 
     @PutMapping("/mynote/{id}")

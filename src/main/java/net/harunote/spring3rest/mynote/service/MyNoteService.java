@@ -10,10 +10,10 @@ import net.harunote.spring3rest.mynote.repository.MyNoteRepository;
 import net.harunote.spring3rest.mynote.repository.TagRepository;
 import net.harunote.spring3rest.mynote.request.MyNoteRequest;
 import net.harunote.spring3rest.mynote.request.TagRequest;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,19 +33,20 @@ public class MyNoteService {
 
     public MyNoteRequest save(MyNoteRequest noteRequest) {
         MyNoteEntity entity = toEntity(noteRequest);
-
+        List<TagEntity> tagList = new ArrayList<>();
         if (!noteRequest.getTag().isEmpty()) {
-            List<TagEntity> tagEntities = new ArrayList<>();
+
             for (TagRequest t : noteRequest.getTag()) {
                 TagEntity tag = new TagEntity();
                 tag.setMyTagName(t.getTagName());
                 tag.setMyNote(entity);
-                tagEntities.add(tag);
-                entity.setTag(tagEntities);
+                tagList.add(tag);
             }
+            entity.setTag(tagList);
         }
-        myNoteRepository.save(entity);
-        return noteRequest;
+        ModelMapper modelMapper = new ModelMapper();
+        MyNoteEntity save = myNoteRepository.save(entity);
+        return modelMapper.map(save, MyNoteRequest.class);
     }
 
     private MyNoteEntity toEntity(MyNoteRequest request) {
