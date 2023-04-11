@@ -1,5 +1,7 @@
 package net.harunote.spring3rest.mynote.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
@@ -11,6 +13,7 @@ import java.util.List;
 @Setter
 @Getter
 @EqualsAndHashCode
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class MyNoteEntity {
     @Id
     @Column(name = "id")
